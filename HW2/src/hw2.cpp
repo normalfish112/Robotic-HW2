@@ -14,16 +14,16 @@ using namespace std;
 turtlesim::Pose pose;
 geometry_msgs::Twist vel_msg;
 geometry_msgs::Point goal_point;
-
+//Define a data structure to 3D
 struct XYZ{
   float x;
   float y;
   float z;
 };
+//Declare a variable.Its name is pos_err with XYZ data type
+struct XYZ pos_err;
 
-struct XYZ pos_err_I;
-
-// declare call back function
+// declare call back function(call back the pose of robot)
 void pos_cb(const turtlesim::Pose::ConstPtr& msg)
 {
   pose = *msg;
@@ -53,7 +53,7 @@ int main(int argc, char **argv)
     printf("goal x : %f \t y : %f\n",goal_point.x,goal_point.y);
     printf("pose x : %f \t y : %f\n",pose.x,pose.y);
 
-    // Calculate position error
+    // Calculate position error(feedback term)
     pos_err.x = goal_point.x - pose.x;
     pos_err.y = goal_point.y - pose.y;
     
