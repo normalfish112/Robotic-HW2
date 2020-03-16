@@ -18,7 +18,7 @@ geometry_msgs::Point goal_point;
 struct XYZ{
   float x;
   float y;
-  float z;
+  float theta;
 };
 //Declare a variable.Its name is pos_err with XYZ data type
 struct XYZ pos_err;
@@ -47,6 +47,8 @@ int main(int argc, char **argv)
   ros::Rate loop_rate(10);
 
   int count = 0;
+  float break_flag;
+
   while (ros::ok()){
 
     printf("\ncount : %d\n",count);
@@ -57,15 +59,14 @@ int main(int argc, char **argv)
     pos_err.x = goal_point.x - pose.x;
     pos_err.y = goal_point.y - pose.y;
     
-    /*Your error-driven controller design
-     *-->
-     *
-     *
-     *
-     *
-     */
-    /*vel_msg.linear.x = (Your control input design);
-     *vel_msg.angular.z = (Your control input design);*/
+    vel_msg.angular.z = 4.0 * (atan2(goal_point.y-pose.y,
+                                goal_point.x-pose.x)-pose.theta);
+    vel_msg.linear.x = 0.5 * sqrt(pow(goal_point.x-pose.x, 2) +pow(goal_point.y-pose.y, 2)); 
+    break_flag=sqrt(pow(goal_point.x-pose.x, 2) +pow(goal_point.y-pose.y, 2));
+
+    ROS_INFO("break_flag=%f",break_flag);
+    if(break_flag<0.1) break;
+
     turtlesim_pub.publish(vel_msg);
 
     count ++;
